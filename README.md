@@ -32,25 +32,26 @@ spec:
       input:
         apiVersion: krm.kcl.dev/v1alpha1
         kind: KCLInput
-        source: |
-          # Read the XR
-          oxr = option("params").oxr
-          # Patch the XR with the status field
-          dxr = {
-              **option("params").dxr
-              status.dummy = "cool-status"
-          }
-          # Construct a bucket
-          bucket = {
-              apiVersion = "s3.aws.upbound.io/v1beta1"
-              kind = "Bucket"
-              metadata.annotations: {
-                  "krm.kcl.dev/composition-resource-name" = "bucket"
-              }
-              spec.forProvider.region = option("oxr").spec.region
-          }
-          # Return the bucket and patched XR
-          items = [bucket, dxr]
+        spec:
+          source: |
+            # Read the XR
+            oxr = option("params").oxr
+            # Patch the XR with the status field
+            dxr = {
+                **option("params").dxr
+                status.dummy = "cool-status"
+            }
+            # Construct a bucket
+            bucket = {
+                apiVersion = "s3.aws.upbound.io/v1beta1"
+                kind = "Bucket"
+                metadata.annotations: {
+                    "krm.kcl.dev/composition-resource-name" = "bucket"
+                }
+                spec.forProvider.region = option("oxr").spec.region
+            }
+            # Return the bucket and patched XR
+            items = [bucket, dxr]
     - step: automatically-detect-ready-composed-resources
       functionRef:
         name: function-auto-ready
